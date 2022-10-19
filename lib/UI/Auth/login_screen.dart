@@ -13,8 +13,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //Desativar o banner de debug
       scaffoldMessengerKey: _validatorKey,
+      //Desativar o banner de debug
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Column(
