@@ -22,8 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "Chaclacayo",
     "Chorrillos",
     "Cieneguilla",
-    "Comas"
-        "El agustino",
+    "Comas",
+    "El agustino",
     "Independencia",
     "Jesús maría",
     "La molina",
@@ -57,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "Villa el salvador",
     "Villa maría del triunfo"
   ];
+  String dropdownvalue = 'Ancón';
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
@@ -229,83 +230,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 15,
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 45),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                isExpanded: true,
-                                hint: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.list,
-                                      size: 16,
-                                      color: Colors.black,
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        'Select Item',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                items: districts
-                                    .map((item) => DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ))
-                                    .toList(),
-                                value: selectedValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = value as String;
-                                  });
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                ),
-                                iconSize: 14,
-                                iconEnabledColor: Colors.white,
-                                iconDisabledColor: Colors.grey,
-                                buttonPadding:
-                                    const EdgeInsets.only(left: 14, right: 14),
-                                buttonDecoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black26,
-                                  ),
-                                  color: Colors.white,
-                                ),
-                                buttonElevation: 2,
-                                itemHeight: 40,
-                                itemPadding:
-                                    const EdgeInsets.only(left: 14, right: 14),
-                                dropdownMaxHeight: 200,
-                                dropdownWidth: 200,
-                                dropdownPadding: null,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: Colors.white,
-                                ),
-                                dropdownElevation: 8,
-                                scrollbarThickness: 6,
-                                scrollbarAlwaysShow: true,
-                                offset: const Offset(-20, 0),
-                              ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            //Un dropdown de districts
+                            child: DropdownButtonFormField(
+                              validator: (value) =>
+                                  value == null ? 'field required' : null,
+                              // Initial Value
+                              isExpanded: true,
+                              value: dropdownvalue,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              // Array list of items
+                              items: districts.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownvalue = newValue!;
+                                });
+                              },
                             ),
                           ),
                           //Button de Sign Up
