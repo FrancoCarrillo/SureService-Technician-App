@@ -1,14 +1,14 @@
 import "package:flutter/material.dart";
 import 'package:email_validator/email_validator.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _validatorKey = GlobalKey<ScaffoldMessengerState>();
   final List<String> districts = [
@@ -73,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text("Sign Up",
+                    const Text("Edit Profile",
                         style: TextStyle(
                             fontSize: 35,
                             color: Colors.black,
@@ -83,6 +83,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Form(
                         key: _formKey,
                         child: Column(children: [
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          // Debe ir la foto de perfil y un boton para cambiarla
+                          Row(
+                            children: [
+                              Column(children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 10, left: 100, right: 100),
+                                  child: Icon(
+                                    Icons.account_circle,
+                                    size: 100,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: MaterialButton(
+                                      color: const Color(0xFF0332FC),
+                                      onPressed: () {},
+                                      child: const Text(
+                                          "Change profile picture",
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                )
+                              ]),
+                            ],
+                          ),
+
                           const SizedBox(
                             height: 30,
                           ),
@@ -261,13 +291,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   if (_formKey.currentState!.validate()) {
                                     _validatorKey.currentState!.showSnackBar(
                                       const SnackBar(
-                                        content: Text("Sign Up successful"),
+                                        content:
+                                            Text("Edit profile successful"),
                                       ),
                                     );
                                   }
                                 },
                                 color: const Color(0xFF0332FC),
-                                child: const Text("SIGN UP",
+                                child: const Text("SAVE CHANGES",
                                     style: TextStyle(color: Colors.white))),
                           ),
                         ]),
