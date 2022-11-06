@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       //Desativar o banner de debug
       debugShowCheckedModeBanner: false,
-      title: "Flutter Demo",
+      title: "Sure Service",
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

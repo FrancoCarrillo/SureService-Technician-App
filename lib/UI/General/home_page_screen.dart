@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:login/UI/General/account_settings_screen.dart';
 import 'package:login/UI/General/appointment_records_screen.dart';
-import 'package:login/UI/General/pending_requests_screen.dart';
+import 'package:login/UI/General/pending_requests/pending_requests_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

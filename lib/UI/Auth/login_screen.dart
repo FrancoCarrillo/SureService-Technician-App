@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Don't have an account?"),
+                            const Text("Do not have an account?"),
                             TextButton(
                               onPressed: () {},
                               child: const Text("Sign Up"),

@@ -31,7 +31,7 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
                   padding: const EdgeInsets.only(top: 20, left: 30),
                   child: Row(
                     children: const <Widget>[
-                      Text("I need to repair my refrigeratos"),
+                      Text("I need to repair my refrigerator"),
                     ],
                   ),
                 ),
