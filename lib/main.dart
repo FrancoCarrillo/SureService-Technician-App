@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //Desativar o banner de debug
+      //Desactivar o banner de debug
       debugShowCheckedModeBanner: false,
       title: "Sure Service",
       theme: ThemeData(
