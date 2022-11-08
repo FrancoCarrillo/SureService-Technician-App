@@ -3,8 +3,8 @@ import 'package:login/Models/client.dart';
 class ServiceRequest {
   int? id;
   String? detail;
-  double? totalPrice;
-  double? reservationPrice;
+  int? totalPrice;
+  int? reservationPrice;
   int? confirmation;
   Client? client;
 
@@ -14,8 +14,8 @@ class ServiceRequest {
   ServiceRequest.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     detail = json['detail'].toString();
-    totalPrice = json['total_price'] * 1.0;
-    reservationPrice = json['reservation_price'] * 1.0;
+    totalPrice = json['total_price'] * 1;
+    reservationPrice = json['reservation_price'] * 1;
     confirmation = json['confirmation'];
     client = Client.fromJson(json['client']);
   }

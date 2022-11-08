@@ -23,4 +23,19 @@ class HttpHelper {
       return null;
     }
   }
+
+  Future<int> editServiceRequest(ServiceRequest serviceRequest) async {
+    final String url = '$urlBase$urlServiceRequest/${serviceRequest.id}';
+    final editServiceRequestUrl = Uri.parse(url);
+    http.Response result = await http.put(editServiceRequestUrl,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "total_price": "${serviceRequest.totalPrice}",
+          "reservation_price": "${serviceRequest.reservationPrice}",
+          "confirmation": "${serviceRequest.confirmation}"
+        }));
+    return result.statusCode;
+  }
 }

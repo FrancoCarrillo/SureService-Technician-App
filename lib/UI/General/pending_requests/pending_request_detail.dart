@@ -1,7 +1,10 @@
 import 'package:login/Models/service_request.dart';
 
 import "package:flutter/material.dart";
+import 'package:login/UI/General/home_page_screen.dart';
 import 'package:login/UI/General/pending_requests/accept_pending_request.dart';
+
+import '../../../Utils/http_helper.dart';
 
 class PendingRequestDetail extends StatefulWidget {
   final ServiceRequest serviceRequest;
@@ -12,9 +15,16 @@ class PendingRequestDetail extends StatefulWidget {
 }
 
 class _PendingRequestDetail extends State<PendingRequestDetail> {
+  HttpHelper? helper;
+
   @override
   void initState() {
+    helper = HttpHelper();
     super.initState();
+  }
+
+  Future sendData() async {
+    await helper?.editServiceRequest(widget.serviceRequest);
   }
 
   @override
@@ -88,7 +98,17 @@ class _PendingRequestDetail extends State<PendingRequestDetail> {
             const SizedBox(height: 10),
             MaterialButton(
               minWidth: double.maxFinite,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  widget.serviceRequest.confirmation = 2;
+                });
+                sendData();
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Servicio rechazado con éxito")));
+                MaterialPageRoute route =
+                    MaterialPageRoute(builder: (_) => const HomeScreen());
+                Navigator.push(context, route);
+              },
               color: const Color(0xFFFC0303),
               child:
                   const Text("REFUSE", style: TextStyle(color: Colors.white)),

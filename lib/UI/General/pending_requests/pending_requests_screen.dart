@@ -82,17 +82,59 @@ class _ServiceRequestItemState extends State<ServiceRequestItem> {
             child: Text(widget.serviceRequest.detail!),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            alignment: Alignment.centerLeft,
-            child: TextButton(
-                onPressed: () {
-                  MaterialPageRoute route = MaterialPageRoute(
-                      builder: (_) =>
-                          PendingRequestDetail(widget.serviceRequest));
-                  Navigator.push(context, route);
-                },
-                child: const Text("MORE INFO")),
-          ),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              alignment: Alignment.centerLeft,
+              child: Column(
+                children: [
+                  if (widget.serviceRequest.confirmation == 0)
+                    TextButton(
+                        onPressed: () {
+                          MaterialPageRoute route = MaterialPageRoute(
+                              builder: (_) =>
+                                  PendingRequestDetail(widget.serviceRequest));
+                          Navigator.push(context, route);
+                        },
+                        child: const Text("MORE INFO")),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Column(
+                      children: [
+                        if (widget.serviceRequest.confirmation != 0)
+                          const SizedBox(height: 10),
+                        if (widget.serviceRequest.confirmation == 1)
+                          const Text(
+                            "ACCEPT",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF0332FC),
+                                fontWeight: FontWeight.w700),
+                          ),
+                        if (widget.serviceRequest.confirmation == 2)
+                          const Text(
+                            "REJECTED",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFFFC0303),
+                                fontWeight: FontWeight.w700),
+                          ),
+                        if (widget.serviceRequest.confirmation == 3)
+                          const Text(
+                            "PAID OUT",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF000000),
+                                fontWeight: FontWeight.w700),
+                          ),
+                        if (widget.serviceRequest.confirmation != 0)
+                          const SizedBox(height: 15),
+                      ],
+                    ),
+                  )
+                ],
+              )),
         ],
       ),
     );

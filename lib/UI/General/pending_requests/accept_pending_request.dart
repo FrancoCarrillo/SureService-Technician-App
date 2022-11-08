@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login/UI/General/home_page_screen.dart';
+import 'package:login/Utils/http_helper.dart';
 
 import '../../../Models/service_request.dart';
 
@@ -12,13 +14,23 @@ class AcceptPendingRequest extends StatefulWidget {
 
 class _AcceptPendingRequest extends State<AcceptPendingRequest> {
   final _formKey = GlobalKey<FormState>();
-  final _validatorKey = GlobalKey<ScaffoldMessengerState>();
   late String price;
+  late int statusCode;
+  HttpHelper? helper;
 
   @override
   void initState() {
+    helper = HttpHelper();
+    statusCode = 0;
     price = "";
     super.initState();
+  }
+
+  Future sendData() async {
+    statusCode = (await helper?.editServiceRequest(widget.serviceRequest))!;
+    setState(() {
+      statusCode = statusCode;
+    });
   }
 
   @override
@@ -45,6 +57,16 @@ class _AcceptPendingRequest extends State<AcceptPendingRequest> {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
+            Text.rich(TextSpan(
+                text: 'ID: ',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: "${widget.serviceRequest.id}",
+                      style: const TextStyle(fontWeight: FontWeight.normal))
+                ])),
+            const SizedBox(height: 5),
             const Text.rich(TextSpan(
                 text: 'Date: ',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -112,11 +134,19 @@ class _AcceptPendingRequest extends State<AcceptPendingRequest> {
                       minWidth: double.maxFinite,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
+                          setState(() {
+                            widget.serviceRequest.confirmation = 1;
+                            widget.serviceRequest.reservationPrice =
+                                int.parse(price);
+                          });
+                          sendData();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
+                              const SnackBar(
+                                  content:
+                                      Text("Servicio aceptado con éxito")));
+                          MaterialPageRoute route = MaterialPageRoute(
+                              builder: (_) => const HomeScreen());
+                          Navigator.push(context, route);
                         }
                       },
                       color: const Color(0xFF0332FC),
