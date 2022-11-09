@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:login/UI/General/edit_profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Auth/login_screen.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -9,6 +12,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+  SharedPreferences? prefs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +91,15 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
             child: MaterialButton(
                 minWidth: double.infinity,
-                onPressed: () {},
+                onPressed: () async {
+                  prefs = await SharedPreferences.getInstance();
+                  prefs?.remove("id");
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()));
+                },
                 color: const Color(0xFF0332FC),
                 child: const Text("Logout",
                     style: TextStyle(color: Colors.white))),

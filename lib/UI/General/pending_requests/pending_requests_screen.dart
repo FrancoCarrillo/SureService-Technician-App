@@ -25,7 +25,7 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
 
   Future initialize() async {
     serviceRequest = List.empty();
-    serviceRequest = await helper?.getServicesRequestByTechnician(144);
+    serviceRequest = await helper?.getServicesRequestByTechnician(274);
     setState(() {
       serviceRequestCount = serviceRequest?.length;
       serviceRequest = serviceRequest;
