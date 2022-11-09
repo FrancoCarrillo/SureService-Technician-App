@@ -30,6 +30,13 @@ class _AcceptPendingRequest extends State<AcceptPendingRequest> {
     statusCode = (await helper?.editServiceRequest(widget.serviceRequest))!;
     setState(() {
       statusCode = statusCode;
+      if (statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Servicio aceptado con éxito")));
+        MaterialPageRoute route =
+            MaterialPageRoute(builder: (_) => const HomeScreen());
+        Navigator.push(context, route);
+      }
     });
   }
 
@@ -124,7 +131,7 @@ class _AcceptPendingRequest extends State<AcceptPendingRequest> {
                           return "Please choose a price";
                         }
                         if (double.parse(value) <= 0.0) {
-                          return "please choose a price greater than zero";
+                          return "Please choose a price greater than zero";
                         }
                         return null;
                       },
@@ -140,13 +147,6 @@ class _AcceptPendingRequest extends State<AcceptPendingRequest> {
                                 int.parse(price);
                           });
                           sendData();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text("Servicio aceptado con éxito")));
-                          MaterialPageRoute route = MaterialPageRoute(
-                              builder: (_) => const HomeScreen());
-                          Navigator.push(context, route);
                         }
                       },
                       color: const Color(0xFF0332FC),
