@@ -16,15 +16,27 @@ class PendingRequestDetail extends StatefulWidget {
 
 class _PendingRequestDetail extends State<PendingRequestDetail> {
   HttpHelper? helper;
+  late int statusCode;
 
   @override
   void initState() {
     helper = HttpHelper();
+    statusCode = 0;
     super.initState();
   }
 
   Future sendData() async {
-    await helper?.editServiceRequest(widget.serviceRequest);
+    statusCode = (await helper?.editServiceRequest(widget.serviceRequest))!;
+    setState(() {
+      statusCode = statusCode;
+      if (statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Servicio rechazado con éxito")));
+        MaterialPageRoute route =
+            MaterialPageRoute(builder: (_) => const HomeScreen());
+        Navigator.push(context, route);
+      }
+    });
   }
 
   @override
@@ -103,11 +115,6 @@ class _PendingRequestDetail extends State<PendingRequestDetail> {
                   widget.serviceRequest.confirmation = 2;
                 });
                 sendData();
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Servicio rechazado con éxito")));
-                MaterialPageRoute route =
-                    MaterialPageRoute(builder: (_) => const HomeScreen());
-                Navigator.push(context, route);
               },
               color: const Color(0xFFFC0303),
               child:
