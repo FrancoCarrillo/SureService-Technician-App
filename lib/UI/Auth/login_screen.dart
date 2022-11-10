@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:login/Models/technician_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/technician.dart';
@@ -103,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: MaterialButton(
                               minWidth: double.infinity,
                               onPressed: () {
-                                final user = Technician(userNameController.text,
+                                final user = TechnicianLogin(userNameController.text,
                                     passwordController.text);
                                 login(user);
                               },
@@ -146,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future login(Technician user) async {
+  Future login(TechnicianLogin user) async {
     id = await httpHelper?.login(user);
     final prefs = await SharedPreferences.getInstance();
     if (id != null) {
