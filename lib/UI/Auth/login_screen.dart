@@ -1,8 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Models/technician.dart';
-import '../../Utils/http_helper.dart';
 import '../General/home_page_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,17 +12,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _validatorKey = GlobalKey<ScaffoldMessengerState>();
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  HttpHelper? httpHelper;
-  Technician? user;
-  int? id;
-
-  @override
-  void initState() {
-    httpHelper = HttpHelper();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: TextFormField(
-                            controller: userNameController,
                             keyboardType: TextInputType.text,
                             decoration: const InputDecoration(
                               labelText: "Username",
@@ -75,8 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: TextFormField(
-                            controller: passwordController,
-                            obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                             decoration: const InputDecoration(
                                 labelText: "Password",
@@ -103,11 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: MaterialButton(
                               minWidth: double.infinity,
                               onPressed: () {
-                                final user = Technician(userNameController.text,
-                                    passwordController.text);
-                                login(user);
-                              },
-                              /*if (_formKey.currentState!.validate()) {
+                                if (_formKey.currentState!.validate()) {
                                   _validatorKey.currentState!.showSnackBar(
                                     const SnackBar(
                                       content: Text("Login successful"),
@@ -119,7 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           builder: (context) =>
                                               const HomeScreen()),
                                       (route) => false);
-                                      */
+                                }
+                              },
                               color: const Color(0xFF0332FC),
                               child: const Text("LOGIN",
                                   style: TextStyle(color: Colors.white))),
@@ -144,28 +124,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future login(Technician user) async {
-    id = await httpHelper?.login(user);
-    final prefs = await SharedPreferences.getInstance();
-    if (id != null) {
-      setState(() {
-        id = id;
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (route) => false);
-      });
-      await prefs.setInt('id', id!);
-    }
-    //Si el id es null, entonces no se pudo loguear
-    else {
-      _validatorKey.currentState!.showSnackBar(
-        const SnackBar(
-          content: Text("Username or password incorrect"),
-        ),
-      );
-    }
   }
 }

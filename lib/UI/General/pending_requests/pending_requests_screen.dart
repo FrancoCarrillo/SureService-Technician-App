@@ -25,7 +25,7 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
 
   Future initialize() async {
     serviceRequest = List.empty();
-    serviceRequest = await helper?.getServicesRequestByTechnician(274);
+    serviceRequest = await helper?.getServicesRequestByTechnician(144);
     setState(() {
       serviceRequestCount = serviceRequest?.length;
       serviceRequest = serviceRequest;
@@ -69,9 +69,9 @@ class _ServiceRequestItemState extends State<ServiceRequestItem> {
       child: Column(
         children: [
           ListTile(
-            leading: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://cdn-icons-png.flaticon.com/512/1053/1053244.png?w=360")),
+            leading: CircleAvatar(
+                backgroundImage:
+                    NetworkImage("${widget.serviceRequest.client!.imageUrl}")),
             title: Text(
                 "${widget.serviceRequest.client!.name} ${widget.serviceRequest.client!.lastName}"),
             subtitle: const Text('20/12/2022'),
