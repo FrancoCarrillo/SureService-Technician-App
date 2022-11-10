@@ -1,8 +1,14 @@
 import "package:flutter/material.dart";
 import 'package:email_validator/email_validator.dart';
+import 'package:login/Models/technician.dart';
+import 'package:login/UI/General/change_password.dart';
+import 'package:login/UI/General/home_page_screen.dart';
+
+import '../../Utils/http_helper.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final Technician technician;
+  const EditProfileScreen(this.technician, {super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -10,7 +16,9 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _formKeyPicture = GlobalKey<FormState>();
   final _validatorKey = GlobalKey<ScaffoldMessengerState>();
+
   final List<String> districts = [
     "Ancón",
     "Ate",
@@ -52,12 +60,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     "Santa maría del mar",
     "Santa rosa",
     "Santiago de surco",
+    "Surco",
     "Surquillo",
     "Villa el salvador",
     "Villa maría del triunfo"
   ];
+
   String dropdownvalue = 'Ancón';
   String? selectedValue;
+  List? specialities;
+  late int statusCode;
+  HttpHelper? helper;
+
+  @override
+  void initState() {
+    helper = HttpHelper();
+    statusCode = 0;
+    initialize();
+    super.initState();
+  }
+
+  Future initialize() async {
+    specialities = List.empty();
+    specialities = (await helper?.getSpecialities())!;
+    setState(() {
+      specialities = specialities;
+    });
+  }
+
+  Future sendData() async {
+    statusCode = (await helper?.editTechnician(widget.technician))!;
+    setState(() {
+      statusCode = statusCode;
+      if (statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Edit profile succesful")));
+
+        MaterialPageRoute route =
+            MaterialPageRoute(builder: (_) => const HomeScreen());
+        Navigator.push(context, route);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,61 +114,64 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text("Edit Profile",
-                        style: TextStyle(
-                            fontSize: 35,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(children: [
+              child: Column(children: [
+                const Text("Edit profile",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+
+                // Debe ir la foto de perfil y un boton para cambiarla
+                Form(
+                  key: _formKeyPicture,
+                  child: Column(children: [
+                    CircleAvatar(
+                        backgroundImage:
+                            NetworkImage("${widget.technician.imageUrl}"),
+                        minRadius: 40.0,
+                        maxRadius: 40.0),
+                    const SizedBox(height: 10),
+                    /*
+                    IconButton(
+                      icon: Image.network("${widget.technician.imageUrl}"),
+                      style: ,
+                      iconSize: 60,
+                      onPressed: () {},
+                    ),*/
+                    MaterialButton(
+                      minWidth: 200,
+                      onPressed: () {},
+                      color: const Color(0xFF0332FC),
+                      child: const Text("Change profile picture",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ]),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           const SizedBox(
                             height: 30,
-                          ),
-                          // Debe ir la foto de perfil y un boton para cambiarla
-                          Row(
-                            children: [
-                              Column(children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 10, left: 100, right: 100),
-                                  child: Icon(
-                                    Icons.account_circle,
-                                    size: 100,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: MaterialButton(
-                                      color: const Color(0xFF0332FC),
-                                      onPressed: () {},
-                                      child: const Text(
-                                          "Change profile picture",
-                                          style:
-                                              TextStyle(color: Colors.white))),
-                                )
-                              ]),
-                            ],
                           ),
 
-                          const SizedBox(
-                            height: 30,
-                          ),
                           TextFormField(
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
+                            initialValue: widget.technician.name,
+                            decoration: InputDecoration(
                               labelText: "Name",
-                              hintText: "Your name",
-                              border: OutlineInputBorder(),
+                              hintText: "${widget.technician.name}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.name = value;
+                            },
                             validator: (value) {
                               return value!.isEmpty
                                   ? "Please enter name"
@@ -136,15 +184,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                           TextFormField(
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              labelText: "Last Name",
-                              hintText: "Your last name",
-                              border: OutlineInputBorder(),
+                            initialValue: widget.technician.lastName,
+                            decoration: InputDecoration(
+                              labelText: "Lastname",
+                              hintText: "${widget.technician.lastName}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.lastName = value;
+                            },
                             validator: (value) {
                               return value!.isEmpty
-                                  ? "Please enter last name"
+                                  ? "Please enter lastname"
+                                  : null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+
+                          TextFormField(
+                            keyboardType: TextInputType.text,
+                            initialValue: widget.technician.username,
+                            decoration: InputDecoration(
+                              labelText: "Username",
+                              hintText: "${widget.technician.username}",
+                              border: const OutlineInputBorder(),
+                            ),
+                            onChanged: (String value) {
+                              widget.technician.username = value;
+                            },
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? "Please enter username"
                                   : null;
                             },
                           ),
@@ -154,12 +226,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                           TextFormField(
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Mobile Number",
-                              hintText: "Your mobile number",
-                              border: OutlineInputBorder(),
+                            initialValue: widget.technician.telephoneNumber,
+                            decoration: InputDecoration(
+                              labelText: "Telephone Number",
+                              hintText: "${widget.technician.telephoneNumber}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.telephoneNumber = value;
+                            },
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "You must enter a mobile number";
@@ -176,12 +251,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                           TextFormField(
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
+                            initialValue: widget.technician.dni,
+                            decoration: InputDecoration(
                               labelText: "ID Card",
-                              hintText: "Your ID card",
-                              border: OutlineInputBorder(),
+                              hintText: "${widget.technician.dni}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.dni = value;
+                            },
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "You must enter a ID Card";
@@ -198,12 +276,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
+                            initialValue: widget.technician.email,
+                            decoration: InputDecoration(
                               labelText: "Email",
-                              hintText: "Your email",
-                              border: OutlineInputBorder(),
+                              hintText: "${widget.technician.email}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.email = value;
+                            },
                             validator: (value) {
                               final bool isValid =
                                   EmailValidator.validate(value!);
@@ -219,32 +300,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
 
                           TextFormField(
-                            keyboardType: TextInputType.visiblePassword,
-                            decoration: const InputDecoration(
-                              labelText: "Password",
-                              hintText: "Your password",
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (String value) {},
-                            validator: (value) {
-                              if (value!.length < 3) {
-                                return "You must enter a password with 3 characters as minimun";
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              labelText: "Profile description",
-                              hintText: "Your profile description",
-                              border: OutlineInputBorder(),
+                            initialValue: widget.technician.professionalProfile,
+                            decoration: InputDecoration(
+                              labelText: "Description",
+                              hintText:
+                                  "${widget.technician.professionalProfile}",
+                              border: const OutlineInputBorder(),
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              widget.technician.professionalProfile = value;
+                            },
                             minLines: 2,
                             maxLines: 5,
                             validator: (value) {
@@ -258,53 +324,63 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            //Un dropdown de districts
-                            child: DropdownButtonFormField(
-                              validator: (value) =>
-                                  value == null ? 'field required' : null,
-                              // Initial Value
-                              isExpanded: true,
-                              value: dropdownvalue,
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              // Array list of items
-                              items: districts.map((String items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  dropdownvalue = newValue!;
-                                });
+
+                          DropdownButtonFormField(
+                            validator: (value) =>
+                                value == null ? 'Field required' : null,
+                            // Initial Value
+                            isExpanded: true,
+                            value: widget.technician.district,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            // Array list of items
+                            items: districts.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(items),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownvalue = newValue!;
+                                widget.technician.district = newValue;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          //Button update profile
+                          MaterialButton(
+                              minWidth: double.infinity,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  sendData();
+                                }
                               },
-                            ),
+                              color: const Color(0xFF0332FC),
+                              child: const Text("Update information",
+                                  style: TextStyle(color: Colors.white))),
+                          const SizedBox(
+                            height: 15,
                           ),
-                          //Button de Sign Up
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 45),
-                            child: MaterialButton(
-                                minWidth: double.infinity,
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _validatorKey.currentState!.showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text("Edit profile successful"),
-                                      ),
-                                    );
-                                  }
-                                },
-                                color: const Color(0xFF0332FC),
-                                child: const Text("SAVE CHANGES",
-                                    style: TextStyle(color: Colors.white))),
-                          ),
+
+                          MaterialButton(
+                              minWidth: double.infinity,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChangePassword(
+                                            widget.technician.id!.toInt())));
+                              },
+                              color: const Color(0xFF0332FC),
+                              child: const Text("Change password",
+                                  style: TextStyle(color: Colors.white))),
                         ]),
-                      ),
-                    )
-                  ]),
+                  ),
+                )
+              ]),
             ),
           ),
         ));
