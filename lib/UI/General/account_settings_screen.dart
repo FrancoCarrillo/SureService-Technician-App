@@ -18,6 +18,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   SharedPreferences? prefs;
   late Technician technician;
   late Speciality speciality;
+  late int id;
   HttpHelper? helper;
 
   @override
@@ -31,7 +32,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   }
 
   Future initialize() async {
-    technician = (await helper?.getTechnicianById(144))!;
+    prefs = await SharedPreferences.getInstance();
+    id = prefs!.getInt("id")!;
+    technician = (await helper?.getTechnicianById(id))!;
     setState(() {
       technician = technician;
     });

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:login/Models/service_request.dart';
 import 'package:login/UI/General/pending_requests/pending_request_detail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Utils/http_helper.dart';
 
@@ -14,6 +15,7 @@ class PendingRequestScreen extends StatefulWidget {
 class _PendingRequestScreenState extends State<PendingRequestScreen> {
   int? serviceRequestCount;
   List? serviceRequest;
+  SharedPreferences? prefs;
   HttpHelper? helper;
 
   @override
@@ -25,7 +27,8 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
 
   Future initialize() async {
     serviceRequest = List.empty();
-    serviceRequest = await helper?.getServicesRequestByTechnician(274);
+    prefs = await SharedPreferences.getInstance();
+    serviceRequest = await helper?.getServicesRequestByTechnician(prefs!.getInt("id")!);
     setState(() {
       serviceRequestCount = serviceRequest?.length;
       serviceRequest = serviceRequest;
