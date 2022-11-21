@@ -75,8 +75,9 @@ class _ReservationItemState extends State<ReservationItem> {
         child: Column(
       children: <Widget>[
         ListTile(
-          leading:
-              const Icon(Icons.account_circle, size: 70, color: Colors.black),
+          leading: CircleAvatar(
+              backgroundImage: NetworkImage(
+                  "${widget.serviceReservationItem.serviceRequest?.client!.imageUrl}")),
           //El title debe ser el nombre del usuario
           title: Text(
               "${widget.serviceReservationItem.serviceRequest!.client!.name} ${widget.serviceReservationItem.serviceRequest!.client!.lastName}"),
