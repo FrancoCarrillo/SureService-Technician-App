@@ -54,7 +54,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "Santiago de surco",
     "Surquillo",
     "Villa el salvador",
-    "Villa maría del triunfo"
+    "Villa maría del triunfo",
+    "Otro"
   ];
   String dropdownvalue = 'Ancón';
   String? selectedValue;

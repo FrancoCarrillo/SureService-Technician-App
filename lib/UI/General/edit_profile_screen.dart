@@ -63,10 +63,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     "Surco",
     "Surquillo",
     "Villa el salvador",
-    "Villa maría del triunfo"
+    "Villa maría del triunfo",
+    "Otro"
   ];
 
-  String dropdownvalue = 'Ancón';
+  String dropdownvalue = 'Otro';
   String? selectedValue;
   List? specialities;
   late int statusCode;
@@ -77,6 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     helper = HttpHelper();
     statusCode = 0;
     initialize();
+    contentDistrict();
     super.initState();
   }
 
@@ -101,6 +103,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Navigator.push(context, route);
       }
     });
+  }
+
+  void contentDistrict() {
+    if (districts.contains(widget.technician.district)) {
+      dropdownvalue = widget.technician.district!;
+    }
   }
 
   @override
@@ -330,7 +338,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 value == null ? 'Field required' : null,
                             // Initial Value
                             isExpanded: true,
-                            value: widget.technician.district,
+                            value: dropdownvalue,
                             icon: const Icon(Icons.keyboard_arrow_down),
                             // Array list of items
                             items: districts.map((String items) {
